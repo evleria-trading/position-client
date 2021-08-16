@@ -27,7 +27,10 @@ func main() {
 	prices := priceConsumer.Consume(context.Background())
 	go func() {
 		for price := range prices {
-			pricesCache.UpdatePrice(*price)
+			err := pricesCache.UpdatePrice(price)
+			if err != nil {
+				log.Error(err)
+			}
 		}
 	}()
 
