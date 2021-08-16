@@ -30,15 +30,13 @@ func (p *price) Consume(ctx context.Context) <-chan *model.Price {
 	ch := make(chan *model.Price)
 
 	go func() {
-		for ctx.Err() != context.Canceled {
+		for {
 			args := &redis.XReadArgs{
 				Streams: []string{"prices", id},
 			}
 			r, err := p.redis.XRead(ctx, args).Result()
 			if err != nil {
-				if err != context.Canceled {
-					log.Error(err)
-				}
+				log.Error(err)
 				continue
 			}
 
@@ -60,7 +58,6 @@ func (p *price) Consume(ctx context.Context) <-chan *model.Price {
 				id = message.ID
 			}
 		}
-		close(ch)
 	}()
 
 	return ch

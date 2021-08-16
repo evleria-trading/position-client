@@ -1,15 +1,16 @@
 package cmd
 
 import (
-	"github.com/evleria/position-client/internal/config"
+	"github.com/evleria/position-client/internal/cache"
+	"github.com/evleria/position-service/protocol/pb"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(cfg *config.Сonfig) *cobra.Command {
+func NewRootCmd(grpcClient pb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
 	rootCmd := &cobra.Command{}
 
-	rootCmd.AddCommand(NewOpenPositionCmd(cfg))
-	rootCmd.AddCommand(NewClosePositionCmd(cfg))
+	rootCmd.AddCommand(NewOpenPositionCmd(grpcClient, pricesCache))
+	rootCmd.AddCommand(NewClosePositionCmd(grpcClient, pricesCache))
 
 	return rootCmd
 }
