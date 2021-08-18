@@ -11,6 +11,7 @@ func NewRootCmd(grpcClient pb.PositionServiceClient, pricesCache cache.Price) *c
 
 	rootCmd.AddCommand(NewOpenPositionCmd(grpcClient, pricesCache))
 	rootCmd.AddCommand(NewClosePositionCmd(grpcClient, pricesCache))
+	rootCmd.AddCommand(NewSetStopLossCmd(grpcClient))
 
 	return rootCmd
 }
