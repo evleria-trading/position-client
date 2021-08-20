@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"github.com/evleria/position-service/protocol/pb"
+	positionPb "github.com/evleria/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -13,7 +13,7 @@ type SetStopLossCmdOptions struct {
 	StopLoss   float64
 }
 
-func NewSetStopLossCmd(grpcClient pb.PositionServiceClient) *cobra.Command {
+func NewSetStopLossCmd(grpcClient positionPb.PositionServiceClient) *cobra.Command {
 	opts := new(SetStopLossCmdOptions)
 
 	setCmd := &cobra.Command{
@@ -36,8 +36,8 @@ func NewSetStopLossCmd(grpcClient pb.PositionServiceClient) *cobra.Command {
 	return setCmd
 }
 
-func runSetStopLoss(opts *SetStopLossCmdOptions, grpcClient pb.PositionServiceClient) error {
-	_, err := grpcClient.SetStopLoss(context.Background(), &pb.SetStopLossRequest{
+func runSetStopLoss(opts *SetStopLossCmdOptions, grpcClient positionPb.PositionServiceClient) error {
+	_, err := grpcClient.SetStopLoss(context.Background(), &positionPb.SetStopLossRequest{
 		PositionId: opts.PositionId,
 		StopLoss:   opts.StopLoss,
 	})

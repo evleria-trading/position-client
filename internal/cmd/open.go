@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"github.com/evleria/position-client/internal/cache"
-	"github.com/evleria/position-service/protocol/pb"
+	positionPb "github.com/evleria/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type OpenPositionCmdOptions struct {
 	IsBuyType bool
 }
 
-func NewOpenPositionCmd(grpcClient pb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
+func NewOpenPositionCmd(grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
 	opts := new(OpenPositionCmdOptions)
 
 	openCmd := &cobra.Command{
@@ -30,13 +30,13 @@ func NewOpenPositionCmd(grpcClient pb.PositionServiceClient, pricesCache cache.P
 	return openCmd
 }
 
-func runOpen(opts *OpenPositionCmdOptions, grpcClient pb.PositionServiceClient, pricesCache cache.Price) error {
+func runOpen(opts *OpenPositionCmdOptions, grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) error {
 	price, err := pricesCache.GetPrice(opts.Symbol)
 	if err != nil {
 		return err
 	}
 
-	request := &pb.OpenPositionRequest{
+	request := &positionPb.OpenPositionRequest{
 		Symbol:    opts.Symbol,
 		IsBuyType: opts.IsBuyType,
 		PriceId:   price.Id,

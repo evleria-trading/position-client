@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"github.com/evleria/position-service/protocol/pb"
+	positionPb "github.com/evleria/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -13,7 +13,7 @@ type TakeProfitCmdOptions struct {
 	TakeProfit float64
 }
 
-func NewSetTakeProfitCmd(grpcClient pb.PositionServiceClient) *cobra.Command {
+func NewSetTakeProfitCmd(grpcClient positionPb.PositionServiceClient) *cobra.Command {
 	opts := new(TakeProfitCmdOptions)
 
 	takeCmd := &cobra.Command{
@@ -35,8 +35,8 @@ func NewSetTakeProfitCmd(grpcClient pb.PositionServiceClient) *cobra.Command {
 	return takeCmd
 }
 
-func runSetTakeProfit(opts *TakeProfitCmdOptions, grpcClient pb.PositionServiceClient) error {
-	_, err := grpcClient.SetTakeProfit(context.Background(), &pb.SetTakeProfitRequest{
+func runSetTakeProfit(opts *TakeProfitCmdOptions, grpcClient positionPb.PositionServiceClient) error {
+	_, err := grpcClient.SetTakeProfit(context.Background(), &positionPb.SetTakeProfitRequest{
 		PositionId: opts.PositionId,
 		TakeProfit: opts.TakeProfit,
 	})
