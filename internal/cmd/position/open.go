@@ -2,6 +2,7 @@ package position
 
 import (
 	"context"
+	"errors"
 	"github.com/evleria-trading/position-client/internal/scope"
 	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
@@ -31,6 +32,10 @@ func NewOpenPositionCmd(s *scope.Scope) *cobra.Command {
 }
 
 func runOpen(opts *OpenPositionCmdOptions, s *scope.Scope) error {
+	if !s.IsUserSet() {
+		return errors.New("user is not set")
+	}
+
 	price, err := s.PricesCache.GetPrice(opts.Symbol)
 	if err != nil {
 		return err
@@ -40,7 +45,7 @@ func runOpen(opts *OpenPositionCmdOptions, s *scope.Scope) error {
 		Symbol:    opts.Symbol,
 		IsBuyType: opts.IsBuyType,
 		PriceId:   price.Id,
-		UserId:    1,
+		UserId:    s.CurrentUserId,
 	}
 	response, err := s.PositionsClient.OpenPosition(context.Background(), request)
 	if err != nil {

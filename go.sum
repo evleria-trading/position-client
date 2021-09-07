@@ -83,6 +83,8 @@ github.com/evleria-trading/position-service v0.0.5/go.mod h1:ThmwvJ97h7dTrNMc2zj
 github.com/evleria-trading/price-service v0.0.4 h1:6Xf0G8YHAmOMvYlRdycTQBdw6E431q1CQljzkavyWDw=
 github.com/evleria-trading/price-service v0.0.4/go.mod h1:FnfKmhSZUl7UiQPAvF4OV0IHHtYLGhq+uQXXlzFMXxo=
 github.com/evleria-trading/price-service v0.0.4/go.mod h1:FnfKmhSZUl7UiQPAvF4OV0IHHtYLGhq+uQXXlzFMXxo=
+github.com/evleria-trading/user-service v0.0.1 h1:qRaCiYXQ1J9RsGCXOTR37ocgVNrA84Wf/Ewep12jqbA=
+github.com/evleria-trading/user-service v0.0.1/go.mod h1:F5QlNYMbmeb4ofKWLEWZUtbk4VaWuvr9XlAmzCXksF8=
 github.com/evleria/price-service v0.0.2/go.mod h1:PsluUj6i02zKgKXxEgF4THaPXvxOVNwTgRpOaTzgl3I=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=

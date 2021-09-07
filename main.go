@@ -11,6 +11,7 @@ import (
 	"github.com/evleria-trading/position-client/internal/scope"
 	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	pricePb "github.com/evleria-trading/price-service/protocol/pb"
+	userPb "github.com/evleria-trading/user-service/protocol/pb"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -22,6 +23,7 @@ func main() {
 	cfg := getConfig()
 	positionGrpcClient := getPositionGrpcClient(cfg)
 	priceGrpcClient := getPriceGrpcClient(cfg)
+	userGrpcClient := getUserGrpcClient(cfg)
 
 	pricesCache := cache.NewPriceCache()
 	priceConsumer := consumer.NewPriceConsumer(priceGrpcClient)
@@ -38,7 +40,7 @@ func main() {
 		}
 	}()
 
-	s := scope.NewScope(positionGrpcClient, pricesCache)
+	s := scope.NewScope(positionGrpcClient, userGrpcClient, pricesCache)
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		input := scanner.Text()
@@ -75,4 +77,12 @@ func getPriceGrpcClient(cfg *config.Сonfig) pricePb.PriceServiceClient {
 		log.Fatal(err)
 	}
 	return pricePb.NewPriceServiceClient(conn)
+}
+
+func getUserGrpcClient(cfg *config.Сonfig) userPb.UserServiceClient {
+	conn, err := grpc.Dial(cfg.UserServiceUrl, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatal(err)
+	}
+	return userPb.NewUserServiceClient(conn)
 }
