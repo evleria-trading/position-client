@@ -48,6 +48,7 @@ func runClose(opts *ClosePositionCmdOptions, s *scope.Scope) error {
 	response, err := s.PositionsClient.ClosePosition(context.Background(), &positionPb.ClosePositionRequest{
 		PositionId: opts.PositionId,
 		PriceId:    price.Id,
+		UserId:     s.CurrentUserId,
 	})
 	log.WithFields(log.Fields{"id": opts.PositionId, "profit": response.Profit}).Info("Closed position")
 	return nil

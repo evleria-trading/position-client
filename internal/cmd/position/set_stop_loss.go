@@ -41,6 +41,7 @@ func runSetStopLoss(opts *SetStopLossCmdOptions, s *scope.Scope) error {
 	_, err := s.PositionsClient.SetStopLoss(context.Background(), &positionPb.SetStopLossRequest{
 		PositionId: opts.PositionId,
 		StopLoss:   opts.StopLoss,
+		UserId:     s.CurrentUserId,
 	})
 	if err != nil {
 		return err

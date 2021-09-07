@@ -1,8 +1,8 @@
 package user
 
 import (
-	"fmt"
 	"github.com/evleria-trading/position-client/internal/scope"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
 )
@@ -32,6 +32,6 @@ func runSetUser(s *scope.Scope, opts *SetUserCmdOptions) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("userID successfully set to", opts.UserId)
+	log.WithFields(log.Fields{"id": opts.UserId}).Info("User set as current")
 	return nil
 }

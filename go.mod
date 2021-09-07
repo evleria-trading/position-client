@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/caarlos0/env/v6 v6.7.0
-	github.com/evleria-trading/position-service v0.0.5
+	github.com/evleria-trading/position-service v0.0.6
 	github.com/evleria-trading/price-service v0.0.4
 	github.com/evleria-trading/user-service v0.0.1
 	github.com/golang/protobuf v1.5.2

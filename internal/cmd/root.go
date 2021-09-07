@@ -10,8 +10,10 @@ import (
 func NewRootCmd(s *scope.Scope) *cobra.Command {
 	rootCmd := &cobra.Command{}
 
-	rootCmd.AddCommand(position.NewPositionCmd(s))
 	rootCmd.AddCommand(user.NewUserCmd(s))
+	if s.IsUserSet() {
+		rootCmd.AddCommand(position.NewPositionCmd(s))
+	}
 
 	return rootCmd
 }

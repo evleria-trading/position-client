@@ -40,6 +40,7 @@ func runSetTakeProfit(opts *TakeProfitCmdOptions, s *scope.Scope) error {
 	_, err := s.PositionsClient.SetTakeProfit(context.Background(), &positionPb.SetTakeProfitRequest{
 		PositionId: opts.PositionId,
 		TakeProfit: opts.TakeProfit,
+		UserId:     s.CurrentUserId,
 	})
 	if err != nil {
 		return err

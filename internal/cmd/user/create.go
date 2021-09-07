@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"github.com/evleria-trading/position-client/internal/scope"
 	"github.com/golang/protobuf/ptypes/empty"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +28,6 @@ func runCreate(s *scope.Scope) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("userID successfully set to", response.UserId)
+	log.WithFields(log.Fields{"id": response.UserId}).Info("Created new user and set as current")
 	return nil
 }
