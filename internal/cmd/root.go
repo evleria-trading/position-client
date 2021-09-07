@@ -1,18 +1,15 @@
 package cmd
 
 import (
-	"github.com/evleria/position-client/internal/cache"
-	positionPb "github.com/evleria/position-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/cmd/position"
+	"github.com/evleria-trading/position-client/internal/scope"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd(grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
+func NewRootCmd(s *scope.Scope) *cobra.Command {
 	rootCmd := &cobra.Command{}
 
-	rootCmd.AddCommand(NewOpenPositionCmd(grpcClient, pricesCache))
-	rootCmd.AddCommand(NewClosePositionCmd(grpcClient, pricesCache))
-	rootCmd.AddCommand(NewSetStopLossCmd(grpcClient))
-	rootCmd.AddCommand(NewSetTakeProfitCmd(grpcClient))
+	rootCmd.AddCommand(position.NewPositionCmd(s))
 
 	return rootCmd
 }

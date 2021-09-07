@@ -2,7 +2,7 @@ package cache
 
 import (
 	"errors"
-	"github.com/evleria/position-client/internal/model"
+	"github.com/evleria-trading/position-client/internal/model"
 	"sync"
 )
 

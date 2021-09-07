@@ -1,9 +1,9 @@
-package cmd
+package position
 
 import (
 	"context"
-	"github.com/evleria/position-client/internal/cache"
-	positionPb "github.com/evleria/position-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/scope"
+	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -13,7 +13,7 @@ type ClosePositionCmdOptions struct {
 	PositionId int64
 }
 
-func NewClosePositionCmd(grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
+func NewClosePositionCmd(s *scope.Scope) *cobra.Command {
 	opts := new(ClosePositionCmdOptions)
 
 	closeCmd := &cobra.Command{
@@ -25,27 +25,27 @@ func NewClosePositionCmd(grpcClient positionPb.PositionServiceClient, pricesCach
 				return err
 			}
 			opts.PositionId = int64(id)
-			return runClose(opts, grpcClient, pricesCache)
+			return runClose(opts, s)
 		},
 	}
 
 	return closeCmd
 }
 
-func runClose(opts *ClosePositionCmdOptions, grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) error {
-	position, err := grpcClient.GetOpenPosition(context.Background(), &positionPb.GetOpenPositionRequest{
+func runClose(opts *ClosePositionCmdOptions, s *scope.Scope) error {
+	position, err := s.PositionsClient.GetOpenPosition(context.Background(), &positionPb.GetOpenPositionRequest{
 		PositionId: opts.PositionId,
 	})
 	if err != nil {
 		return err
 	}
 
-	price, err := pricesCache.GetPrice(position.Symbol)
+	price, err := s.PricesCache.GetPrice(position.Symbol)
 	if err != nil {
 		return err
 	}
 
-	response, err := grpcClient.ClosePosition(context.Background(), &positionPb.ClosePositionRequest{
+	response, err := s.PositionsClient.ClosePosition(context.Background(), &positionPb.ClosePositionRequest{
 		PositionId: opts.PositionId,
 		PriceId:    price.Id,
 	})

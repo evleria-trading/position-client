@@ -1,8 +1,9 @@
-package cmd
+package position
 
 import (
 	"context"
-	positionPb "github.com/evleria/position-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/scope"
+	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -13,7 +14,7 @@ type SetStopLossCmdOptions struct {
 	StopLoss   float64
 }
 
-func NewSetStopLossCmd(grpcClient positionPb.PositionServiceClient) *cobra.Command {
+func NewSetStopLossCmd(s *scope.Scope) *cobra.Command {
 	opts := new(SetStopLossCmdOptions)
 
 	setCmd := &cobra.Command{
@@ -29,15 +30,15 @@ func NewSetStopLossCmd(grpcClient positionPb.PositionServiceClient) *cobra.Comma
 				return err
 			}
 			opts.PositionId, opts.StopLoss = int64(id), -v
-			return runSetStopLoss(opts, grpcClient)
+			return runSetStopLoss(opts, s)
 		},
 	}
 
 	return setCmd
 }
 
-func runSetStopLoss(opts *SetStopLossCmdOptions, grpcClient positionPb.PositionServiceClient) error {
-	_, err := grpcClient.SetStopLoss(context.Background(), &positionPb.SetStopLossRequest{
+func runSetStopLoss(opts *SetStopLossCmdOptions, s *scope.Scope) error {
+	_, err := s.PositionsClient.SetStopLoss(context.Background(), &positionPb.SetStopLossRequest{
 		PositionId: opts.PositionId,
 		StopLoss:   opts.StopLoss,
 	})

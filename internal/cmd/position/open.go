@@ -1,9 +1,9 @@
-package cmd
+package position
 
 import (
 	"context"
-	"github.com/evleria/position-client/internal/cache"
-	positionPb "github.com/evleria/position-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/scope"
+	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type OpenPositionCmdOptions struct {
 	IsBuyType bool
 }
 
-func NewOpenPositionCmd(grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) *cobra.Command {
+func NewOpenPositionCmd(s *scope.Scope) *cobra.Command {
 	opts := new(OpenPositionCmdOptions)
 
 	openCmd := &cobra.Command{
@@ -21,7 +21,7 @@ func NewOpenPositionCmd(grpcClient positionPb.PositionServiceClient, pricesCache
 		Args: cobra.ExactArgs(1),
 		RunE: func(c *cobra.Command, args []string) error {
 			opts.Symbol = args[0]
-			return runOpen(opts, grpcClient, pricesCache)
+			return runOpen(opts, s)
 		},
 	}
 
@@ -30,8 +30,8 @@ func NewOpenPositionCmd(grpcClient positionPb.PositionServiceClient, pricesCache
 	return openCmd
 }
 
-func runOpen(opts *OpenPositionCmdOptions, grpcClient positionPb.PositionServiceClient, pricesCache cache.Price) error {
-	price, err := pricesCache.GetPrice(opts.Symbol)
+func runOpen(opts *OpenPositionCmdOptions, s *scope.Scope) error {
+	price, err := s.PricesCache.GetPrice(opts.Symbol)
 	if err != nil {
 		return err
 	}
@@ -40,8 +40,9 @@ func runOpen(opts *OpenPositionCmdOptions, grpcClient positionPb.PositionService
 		Symbol:    opts.Symbol,
 		IsBuyType: opts.IsBuyType,
 		PriceId:   price.Id,
+		UserId:    1,
 	}
-	response, err := grpcClient.OpenPosition(context.Background(), request)
+	response, err := s.PositionsClient.OpenPosition(context.Background(), request)
 	if err != nil {
 		return err
 	}

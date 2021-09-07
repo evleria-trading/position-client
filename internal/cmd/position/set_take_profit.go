@@ -1,8 +1,9 @@
-package cmd
+package position
 
 import (
 	"context"
-	positionPb "github.com/evleria/position-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/scope"
+	positionPb "github.com/evleria-trading/position-service/protocol/pb"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -13,7 +14,7 @@ type TakeProfitCmdOptions struct {
 	TakeProfit float64
 }
 
-func NewSetTakeProfitCmd(grpcClient positionPb.PositionServiceClient) *cobra.Command {
+func NewSetTakeProfitCmd(s *scope.Scope) *cobra.Command {
 	opts := new(TakeProfitCmdOptions)
 
 	takeCmd := &cobra.Command{
@@ -29,14 +30,14 @@ func NewSetTakeProfitCmd(grpcClient positionPb.PositionServiceClient) *cobra.Com
 				return err
 			}
 			opts.PositionId, opts.TakeProfit = int64(id), v
-			return runSetTakeProfit(opts, grpcClient)
+			return runSetTakeProfit(opts, s)
 		},
 	}
 	return takeCmd
 }
 
-func runSetTakeProfit(opts *TakeProfitCmdOptions, grpcClient positionPb.PositionServiceClient) error {
-	_, err := grpcClient.SetTakeProfit(context.Background(), &positionPb.SetTakeProfitRequest{
+func runSetTakeProfit(opts *TakeProfitCmdOptions, s *scope.Scope) error {
+	_, err := s.PositionsClient.SetTakeProfit(context.Background(), &positionPb.SetTakeProfitRequest{
 		PositionId: opts.PositionId,
 		TakeProfit: opts.TakeProfit,
 	})

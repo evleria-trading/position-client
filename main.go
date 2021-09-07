@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"context"
 	"github.com/caarlos0/env/v6"
-	"github.com/evleria/position-client/internal/cache"
-	"github.com/evleria/position-client/internal/cmd"
-	"github.com/evleria/position-client/internal/config"
-	"github.com/evleria/position-client/internal/consumer"
-	positionPb "github.com/evleria/position-service/protocol/pb"
-	pricePb "github.com/evleria/price-service/protocol/pb"
+	"github.com/evleria-trading/position-client/internal/cache"
+	"github.com/evleria-trading/position-client/internal/cmd"
+	"github.com/evleria-trading/position-client/internal/config"
+	"github.com/evleria-trading/position-client/internal/consumer"
+	"github.com/evleria-trading/position-client/internal/scope"
+	positionPb "github.com/evleria-trading/position-service/protocol/pb"
+	pricePb "github.com/evleria-trading/price-service/protocol/pb"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -20,10 +21,10 @@ import (
 func main() {
 	cfg := getConfig()
 	positionGrpcClient := getPositionGrpcClient(cfg)
-	getPriceGrpcClient := getPriceGrpcClient(cfg)
+	priceGrpcClient := getPriceGrpcClient(cfg)
 
 	pricesCache := cache.NewPriceCache()
-	priceConsumer := consumer.NewPriceConsumer(getPriceGrpcClient)
+	priceConsumer := consumer.NewPriceConsumer(priceGrpcClient)
 	prices, err := priceConsumer.Consume(context.Background())
 	if err != nil {
 		log.Fatal(err)
@@ -37,11 +38,12 @@ func main() {
 		}
 	}()
 
+	s := scope.NewScope(positionGrpcClient, pricesCache)
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		input := scanner.Text()
 		args := strings.Split(input, " ")
-		rootCmd := cmd.NewRootCmd(positionGrpcClient, pricesCache)
+		rootCmd := cmd.NewRootCmd(s)
 		rootCmd.SetArgs(args)
 		err := rootCmd.Execute()
 		if err != nil {
