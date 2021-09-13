@@ -3,6 +3,7 @@ package cache
 import (
 	"errors"
 	"github.com/evleria-trading/position-client/internal/model"
+	"sort"
 	"sync"
 )
 
@@ -14,6 +15,7 @@ var (
 type Price interface {
 	GetPrice(symbol string) (*model.Price, error)
 	UpdatePrice(price *model.Price) error
+	GetPrices() []model.Price
 }
 
 type price struct {
@@ -51,4 +53,18 @@ func (p *price) UpdatePrice(price *model.Price) error {
 	}
 	p.m[price.Symbol] = *price
 	return nil
+}
+
+func (p *price) GetPrices() []model.Price {
+	p.mx.RLock()
+	result := make([]model.Price, 0, len(p.m))
+	for _, pr := range p.m {
+		result = append(result, pr)
+	}
+	p.mx.RUnlock()
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Symbol < result[j].Symbol
+	})
+	return result
 }
